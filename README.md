@@ -6,3 +6,5 @@ Proyecto de java exacomit
 * Maven 3.8.3
 * Spring Boot 3.1.5
 
+## Ejecución
+* gradle clean install
