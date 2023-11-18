@@ -1,4 +1,8 @@
 spring:
+  security:
+    user:
+      name: proyectouser
+      password: pass1234
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -20,13 +24,6 @@ server:
     context-path: /proyectofinal
 logging:
   level:
-    org:
-      hibernate:
-        SQL: debug
-        type:
-          descriptor:
-            sql:
-              BasicBinder: trace
     com:
       exacom:
         proyectofinal: debug

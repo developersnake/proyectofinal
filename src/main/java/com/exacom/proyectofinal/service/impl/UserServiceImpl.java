@@ -4,9 +4,14 @@ import com.exacom.proyectofinal.domain.UserDTO;
 import com.exacom.proyectofinal.exception.CoreException;
 import com.exacom.proyectofinal.mapper.UserMapper;
 import com.exacom.proyectofinal.repository.UserRepository;
+import com.exacom.proyectofinal.service.JwtService;
 import com.exacom.proyectofinal.service.UserService;
+import com.exacom.proyectofinal.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +24,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Override
     public UserDTO findById(Long id) throws CoreException {
@@ -76,5 +83,18 @@ public class UserServiceImpl implements UserService {
     public String delete(Long id) {
         userRepository.deleteById(id);
         return "Se elimino el usuario con el id: " + id + " correctamente";
+    }
+
+    @Override
+    public String login(String user, String password) {
+        var userEntity = userRepository.findByUsername(user)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado."));
+
+        var userAuth = new UsernamePasswordAuthenticationToken(userEntity.getUsername(), password);
+        var auth = authenticationManager.authenticate(userAuth);
+        if (auth.isAuthenticated()) {
+            return jwtService.generateToken(userMapper.toDTO(userEntity));
+        }
+        return null;
     }
 }

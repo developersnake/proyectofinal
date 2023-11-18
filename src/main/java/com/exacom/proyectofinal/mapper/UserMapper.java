@@ -5,6 +5,7 @@ import com.exacom.proyectofinal.domain.UserDTO;
 import com.exacom.proyectofinal.model.Rol;
 import com.exacom.proyectofinal.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class UserMapper implements StandartMapper<User, UserDTO> {
 
     private final RolMapper rolMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User toEntity(UserDTO dto) {
@@ -24,7 +26,7 @@ public class UserMapper implements StandartMapper<User, UserDTO> {
         return User.builder()
                 .id(dto.getId())
                 .username(dto.getUsername())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .email(dto.getEmail())
                 .roles(roles)
                 .enabled(dto.isEnabled())
